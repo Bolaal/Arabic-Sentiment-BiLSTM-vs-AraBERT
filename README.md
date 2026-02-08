@@ -174,7 +174,7 @@ Output (1, Sigmoid)
 ### Key Findings
 
 1. **AraBERT Superior Performance**
-   - Higher accuracy by XX%
+   - Higher accuracy by 92.87%
    - Better handling of context and nuance
    - Robust to spelling variations
 
