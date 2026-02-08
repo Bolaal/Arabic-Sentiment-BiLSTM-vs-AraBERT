@@ -34,7 +34,7 @@ This project implements and compares two state-of-the-art approaches for Arabic 
 | BiLSTM | 2-layer BiLSTM | ~500K | 84.53% | 84.03% | ~10 min |
 | AraBERT | BERT-base | ~110M | 92.87% | 92.87% | ~30 min |
 
-**Winner:** AraBERT outperformed BiLSTM by XX% in accuracy
+**Winner:** AraBERT outperformed BiLSTM by 92.87% in accuracy
 
 ---
 
