@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: arabic-sentiment-api
+  labels:
+    app: arabic-sentiment-api
+spec:
+  type: ClusterIP  # Change to LoadBalancer for external access
+  
+  selector:
+    app: arabic-sentiment-api
+  
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8000
+    protocol: TCP
+  
+  sessionAffinity: None
+
+---
+# Optional: LoadBalancer service for external access
+# Uncomment if you want direct external access without Ingress
+apiVersion: v1
+kind: Service
+metadata:
+  name: arabic-sentiment-api-external
+  labels:
+    app: arabic-sentiment-api
+spec:
+  type: LoadBalancer
+  
+  selector:
+    app: arabic-sentiment-api
+  
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+  
+  sessionAffinity: None

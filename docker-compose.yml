@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Arabic Sentiment Analysis API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: arabic-sentiment-api:latest
+    container_name: arabic-sentiment-api
+    
+    ports:
+      - "8000:8000"
+    
+    environment:
+      - MODEL_NAME=Belall87/arabert-arabic-sentiment
+      - PORT=8000
+      - WORKERS=1
+      - LOG_LEVEL=info
+      - MAX_LENGTH=128
+      - CORS_ORIGINS=*
+    
+    # Volume for caching Hugging Face models
+    volumes:
+      - huggingface-cache:/home/appuser/.cache/huggingface
+      # Optional: mount local code for development
+      # - ./backend/main.py:/app/main.py
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Resource limits (adjust based on your system)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Network
+    networks:
+      - sentiment-network
+
+# Networks
+networks:
+  sentiment-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  huggingface-cache:
+    driver: local

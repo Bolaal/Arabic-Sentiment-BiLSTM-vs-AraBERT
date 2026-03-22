@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arabic-sentiment-api
+  labels:
+    app: arabic-sentiment-api
+    version: v1.0.0
+spec:
+  replicas: 2
+  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  
+  selector:
+    matchLabels:
+      app: arabic-sentiment-api
+  
+  template:
+    metadata:
+      labels:
+        app: arabic-sentiment-api
+        version: v1.0.0
+    
+    spec:
+      # Use non-root user (matches Dockerfile)
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      
+      containers:
+      - name: api
+        image: arabic-sentiment-api:latest
+        imagePullPolicy: IfNotPresent
+        
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        
+        env:
+        - name: MODEL_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: arabic-sentiment-config
+              key: model_name
+        - name: PORT
+          value: "8000"
+        - name: WORKERS
+          value: "1"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: MAX_LENGTH
+          valueFrom:
+            configMapKeyRef:
+              name: arabic-sentiment-config
+              key: max_length
+        - name: CORS_ORIGINS
+          value: "*"
+        
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+        
+        # Readiness probe - when is the pod ready to receive traffic
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        
+        # Liveness probe - is the pod still alive
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        
+        # Startup probe - for slow-starting containers
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 12  # 2 minutes max startup time
+        
+        # Volume for Hugging Face model cache
+        volumeMounts:
+        - name: model-cache
+          mountPath: /home/appuser/.cache/huggingface
+      
+      volumes:
+      - name: model-cache
+        emptyDir: {}  # Use PVC for persistent cache across pod restarts
+      
+      # Optional: Use node affinity to prefer nodes with more memory
+      # affinity:
+      #   nodeAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       preference:
+      #         matchExpressions:
+      #         - key: node.kubernetes.io/instance-type
+      #           operator: In
+      #           values:
+      #           - memory-optimized

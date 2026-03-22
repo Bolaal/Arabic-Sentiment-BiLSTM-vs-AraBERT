@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arabic-sentiment-config
+  labels:
+    app: arabic-sentiment-api
+data:
+  # Hugging Face model identifier
+  model_name: "Belall87/arabert-arabic-sentiment"
+  
+  # Maximum sequence length for tokenization
+  max_length: "128"
+  
+  # API configuration
+  api_version: "1.0.0"
+  api_title: "Arabic Sentiment Analysis API"
+  
+  # Feature flags (if needed)
+  enable_batch_prediction: "true"
+  batch_size_limit: "100"

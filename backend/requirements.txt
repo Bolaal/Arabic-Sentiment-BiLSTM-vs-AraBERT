@@ -1,0 +1,14 @@
+# FastAPI Backend Requirements
+# Minimal dependencies for production deployment
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+
+# ML Dependencies
+torch>=2.0.0
+transformers>=4.30.0
+
+# CORS Support (already in fastapi but explicit for clarity)
+python-multipart==0.0.6

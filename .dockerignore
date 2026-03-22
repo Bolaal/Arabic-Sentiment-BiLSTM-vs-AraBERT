@@ -1,0 +1,83 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+LICENSE
+*.md
+docs/
+
+# Data files (large)
+data/
+*.csv
+*.pkl
+*.pickle
+
+# Model files (downloaded at runtime from Hugging Face)
+models/
+arabert_final_model/
+arabert_results/
+*.safetensors
+*.h5
+*.hdf5
+training_args.bin
+
+# Notebooks and results
+notebooks/
+results/
+*.ipynb
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# Logs
+*.log
+logs/
+wandb/
+mlruns/
+
+# Docker
+docker/
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Kubernetes
+k8s/
+*.yaml
+
+# Environment files
+.env
+.env.*
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
